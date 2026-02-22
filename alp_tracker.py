@@ -130,7 +130,7 @@ def draw_circle(percent):
     </div>
     """, unsafe_allow_html=True)
 
-# ---------------- 50 DAY PLAN ----------------
+# ---------------- 50 DAY MASTER PLAN ----------------
 st.markdown("<h2 style='text-align:center;'>📅 50 DAY MASTER STUDY PLAN</h2>", unsafe_allow_html=True)
 
 start_date = datetime.now() + timedelta(days=1)
@@ -167,8 +167,7 @@ for day in range(1, 51):
 
 save_data(progress)
 
-# ---------------- CUMULATIVE CALCULATION ----------------
-
+# ---------------- SUBJECT CUMULATIVE PERCENTAGE ----------------
 total_days = 50
 
 apt_percent = int((subject_done["apt"] / total_days) * 100)
@@ -176,7 +175,6 @@ res_percent = int((subject_done["res"] / total_days) * 100)
 eng_percent = int((subject_done["eng"] / total_days) * 100)
 fit_percent = int((subject_done["fit"] / total_days) * 100)
 
-# ---------------- SUBJECT CIRCLES ----------------
 st.markdown("<h2 style='text-align:center;'>📊 Subject Wise Cumulative Completion</h2>", unsafe_allow_html=True)
 
 c1,c2,c3,c4 = st.columns(4)
