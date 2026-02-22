@@ -1,15 +1,29 @@
 import streamlit as st
 import random
+import json
+import os
 
 st.set_page_config(page_title="KIRAN ALP CBT-2 PREPARATION TRACKER", layout="wide")
 
-# -------------------- STYLE --------------------
+# ---------------- SAVE FILE ----------------
+SAVE_FILE = "progress.json"
+
+def load_progress():
+    if os.path.exists(SAVE_FILE):
+        with open(SAVE_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_progress(data):
+    with open(SAVE_FILE, "w") as f:
+        json.dump(data, f)
+
+progress_data = load_progress()
+
+# ---------------- STYLE ----------------
 st.markdown("""
 <style>
-
-.stApp {
-    background-color: #eaf4ff;
-}
+.stApp { background-color: #eaf4ff; }
 
 .stApp::before {
     content: "";
@@ -24,125 +38,80 @@ st.markdown("""
     z-index: -1;
 }
 
-/* Heading */
 .main-title {
-    text-align: center;
-    font-size: 48px;
-    font-weight: 800;
-    background: linear-gradient(90deg, #1565c0, #8e24aa);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-top: 20px;
+    text-align:center;
+    font-size:48px;
+    font-weight:800;
+    background: linear-gradient(90deg,#1565c0,#8e24aa);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
-/* Quote */
 .quote-box {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 600;
-    margin-top: 40px;
-    margin-bottom: 60px;
-    color: #5e35b1;
+    text-align:center;
+    font-size:22px;
+    font-weight:600;
+    margin-top:40px;
+    margin-bottom:60px;
+    color:#5e35b1;
 }
 
-/* Section Box */
 .section-box {
-    background-color: rgba(255,255,255,0.95);
-    padding: 25px;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    box-shadow: 0px 5px 12px rgba(0,0,0,0.1);
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:30px;
+    box-shadow:0px 5px 12px rgba(0,0,0,0.1);
 }
-
-.circle-container {
-    display:flex;
-    justify-content:center;
-    margin-top:30px;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
-# -------------------- TITLE --------------------
+# ---------------- TITLE ----------------
 st.markdown('<div class="main-title">KIRAN ALP CBT-2 PREPARATION TRACKER</div>', unsafe_allow_html=True)
 
-# -------------------- QUOTES --------------------
 quotes = [
-    "Small daily progress leads to big success.",
-    "Discipline today, selection tomorrow.",
-    "Consistency beats talent.",
-    "Railway uniform loading...",
-    "Stay focused. You are closer than you think."
+"Small daily progress leads to big success.",
+"Discipline today, selection tomorrow.",
+"Consistency beats talent.",
+"Stay focused. You are closer than you think."
 ]
 
 st.markdown(f'<div class="quote-box">💡 {random.choice(quotes)}</div>', unsafe_allow_html=True)
 
-# -------------------- FULL SYLLABUS --------------------
-
+# ---------------- SYLLABUS ----------------
 syllabus = {
+"ARITHMETIC": ["Number System","BODMAS","Decimals","Fractions","LCM","HCF",
+"Ratio & Proportion","Percentages","Mensuration","Time & Work",
+"Time & Distance","Simple Interest","Compound Interest",
+"Profit & Loss","Algebra","Geometry","Trigonometry",
+"Elementary Statistics","Square Root","Age Problems",
+"Calendar","Clock","Pipes & Cistern"],
 
-"PART A - ARITHMETIC": [
-"Number System","BODMAS","Decimals","Fractions","LCM","HCF",
-"Ratio & Proportion","Percentages","Mensuration",
-"Time & Work","Time & Distance",
-"Simple Interest","Compound Interest",
-"Profit & Loss","Algebra",
-"Geometry","Trigonometry",
-"Elementary Statistics","Square Root",
-"Age Calculations","Calendar","Clock",
-"Pipes & Cistern"
-],
+"REASONING": ["Analogies","Alphabetical Series","Number Series",
+"Coding-Decoding","Mathematical Operations","Relationships",
+"Syllogism","Jumbling","Venn Diagram","Data Interpretation",
+"Data Sufficiency","Conclusions","Decision Making",
+"Similarities & Differences","Analytical Reasoning",
+"Classification","Directions","Statement-Arguments","Assumptions"],
 
-"PART A - REASONING": [
-"Analogies","Alphabetical Series","Number Series",
-"Coding-Decoding","Mathematical Operations",
-"Relationships","Syllogism","Jumbling",
-"Venn Diagram","Data Interpretation",
-"Data Sufficiency","Conclusions",
-"Decision Making","Similarities & Differences",
-"Analytical Reasoning","Classification",
-"Directions","Statement-Arguments",
-"Assumptions"
-],
+"ENGINEERING SCIENCE": ["Engineering Drawing","Views","Drawing Instruments",
+"Lines","Geometric Figures","Units & Measurements",
+"Mass Weight Density","Work Power Energy",
+"Speed & Velocity","Heat & Temperature",
+"Basic Electricity","Levers","Occupational Safety",
+"Environment","IT Literacy"],
 
-"PART A - ENGINEERING SCIENCE": [
-"Engineering Drawing","Views & Projections",
-"Drawing Instruments","Lines",
-"Geometric Figures","Symbolic Representation",
-"Units & Measurements","Mass Weight Density",
-"Work Power Energy","Speed & Velocity",
-"Heat & Temperature","Basic Electricity",
-"Levers & Simple Machines",
-"Occupational Safety & Health",
-"Environmental Education","IT Literacy"
-],
+"TRADE THEORY 1st YEAR": ["Introduction","Safety","Marking Tools","Metals",
+"Hand Tools","Measuring Tools","Cutting Tools",
+"Sheet Metal","Welding","Lathe Construction",
+"Lathe Tools","Lathe Operations"],
 
-"PART B - TRADE THEORY (1st Year)": [
-"Introduction","Occupational Safety",
-"Marking Tools","Metals",
-"Hand Tools","Measuring Tools",
-"Cutting Tools","Sheet Metal Work",
-"Brazing & Soldering","Riveting",
-"Welding","Drilling & Reaming",
-"Screw Threads","Grinding",
-"Limits & Fits","Lathe Construction",
-"Lathe Accessories","Lathe Tools",
-"Lathe Operations","Preventive Maintenance"
-],
-
-"PART B - TRADE THEORY (2nd Year)": [
-"Fasteners","Gauges","Metrology",
-"Heat Treatment","Bearings",
-"Pipe Fittings","Jigs & Fixtures",
-"Working Materials","Transmission of Power",
-"Hydraulics & Pneumatics",
-"Lubricants & Coolants",
-"Lifting Appliances"
-]
+"TRADE THEORY 2nd YEAR": ["Fasteners","Gauges","Metrology",
+"Heat Treatment","Bearings","Pipe Fittings",
+"Jigs & Fixtures","Hydraulics","Lubricants"]
 }
 
-# -------------------- PROGRESS CALCULATION --------------------
-
+# ---------------- PROGRESS ----------------
 total_topics = 0
 total_done = 0
 
@@ -152,56 +121,44 @@ for section, topics in syllabus.items():
     st.subheader(section)
 
     done = 0
+
     for topic in topics:
-        if st.checkbox(topic, key=section+topic):
+        key = section + "_" + topic
+
+        default_value = progress_data.get(key, False)
+
+        checked = st.checkbox(topic, value=default_value, key=key)
+
+        progress_data[key] = checked
+
+        if checked:
             done += 1
 
     total_topics += len(topics)
     total_done += done
 
-    completed = int((done / len(topics)) * 100)
-    pending = 100 - completed
+    percent = int((done / len(topics)) * 100)
+    pending = 100 - percent
 
-    st.progress(completed / 100)
-    st.write(f"Completed: {completed}%")
+    st.progress(percent / 100)
+    st.write(f"Completed: {percent}%")
     st.write(f"Pending: {pending}%")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-# -------------------- OVERALL STATUS --------------------
+# Save automatically
+save_progress(progress_data)
 
-overall_completed = int((total_done / total_topics) * 100)
-overall_pending = 100 - overall_completed
+# ---------------- OVERALL ----------------
+overall = int((total_done / total_topics) * 100)
+overall_pending = 100 - overall
 
-circle_html = f"""
-<div class="circle-container">
-<svg width="240" height="240">
-  <circle cx="120" cy="120" r="100" stroke="#d6e4ff" stroke-width="18" fill="none"/>
-  <circle cx="120" cy="120" r="100"
-    stroke="#1976d2"
-    stroke-width="18"
-    fill="none"
-    stroke-dasharray="628"
-    stroke-dashoffset="{628 - (628 * overall_completed / 100)}"
-    stroke-linecap="round"
-    transform="rotate(-90 120 120)"
-    style="transition: stroke-dashoffset 1.2s ease-in-out;"
-  />
-  <text x="50%" y="45%" text-anchor="middle"
-    font-size="36" fill="black" font-weight="bold">{overall_completed}%</text>
-  <text x="50%" y="65%" text-anchor="middle"
-    font-size="16" fill="gray">Pending: {overall_pending}%</text>
-</svg>
-</div>
-"""
+st.subheader("Overall Completion")
 
-st.markdown('<div class="section-box">', unsafe_allow_html=True)
-st.subheader("Overall Completion Status")
-st.markdown(circle_html, unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
+st.progress(overall / 100)
+st.write(f"Overall Completed: {overall}%")
+st.write(f"Overall Pending: {overall_pending}%")
 
-# -------------------- CELEBRATION --------------------
-
-if overall_completed == 100:
+if overall == 100:
     st.balloons()
-    st.success("🎉 100% SYLLABUS COMPLETED! READY FOR EXAM! 🎉")
+    st.success("🎉 100% Completed! You are Exam Ready!")
