@@ -2,7 +2,7 @@
 # ================= 50 DAY STUDY PLAN ========================
 # ============================================================
 
-st.header("📅 50 DAY MASTER STUDY PLAN")
+st.header("50 DAY MASTER STUDY PLAN")
 
 from math import pi
 
