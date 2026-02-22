@@ -3,16 +3,20 @@ import random
 
 st.set_page_config(page_title="KIRAN ALP CBT-2 PREPARATION TRACKER", layout="wide")
 
-# ---------------- SOFT STUDY THEME ----------------
+# ---------------- BACKGROUND STYLE ----------------
 st.markdown("""
 <style>
 .stApp {
-    background: linear-gradient(to right, #e3f2fd, #fce4ec);
+    background-color: #e3f2fd;
+    background-image: url("https://img.freepik.com/free-vector/girl-studying-concept-illustration_114360-1465.jpg");
+    background-repeat: no-repeat;
+    background-position: right bottom;
+    background-size: 450px;
 }
 
 h1 {
     text-align: center;
-    color: #4fc3f7;
+    color: black;
     font-size: 42px;
 }
 
@@ -21,12 +25,8 @@ h1 {
     padding: 20px;
     border-radius: 15px;
     margin-bottom: 25px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-}
-
-.topic-title {
-    color: #4fc3f7;
-    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    color: black;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -36,10 +36,10 @@ st.markdown("<h1>KIRAN ALP CBT-2 PREPARATION TRACKER</h1>", unsafe_allow_html=Tr
 # ---------------- MOTIVATIONAL QUOTES ----------------
 quotes = [
     "Stay focused. Railway selection is loading...",
-    "Study like a topper. Win like a champion.",
-    "Small daily progress = Big success.",
-    "Dream ALP. Work ALP. Become ALP.",
-    "Consistency creates success."
+    "Small daily progress leads to big success.",
+    "Consistency beats talent.",
+    "Dream it. Study it. Achieve it.",
+    "Your ALP badge is waiting."
 ]
 
 st.info(random.choice(quotes))
