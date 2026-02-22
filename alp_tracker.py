@@ -33,7 +33,7 @@ st.markdown("""
 
 .section-title {
     text-align:center;
-    font-size:20px;
+    font-size:18px;
     font-weight:bold;
 }
 </style>
@@ -66,7 +66,7 @@ def save_data(data):
 
 progress = load_data()
 
-# ---------------- FULL SYLLABUS ----------------
+# ---------------- TOPICS ----------------
 aptitude_topics = [
     "Number System","BODMAS","Decimals","Fractions","LCM & HCF",
     "Ratio & Proportion","Percentages","Time & Work",
@@ -96,10 +96,9 @@ fitter_topics = [
 
 # ---------------- CIRCLE FUNCTION ----------------
 def draw_circle(percent):
-    completed = percent
-    pending = 100 - percent
     color = "#00cc44" if percent == 100 else "#ff4d4d"
     deg = percent * 3.6
+    pending = 100 - percent
 
     st.markdown(f"""
     <div style="display:flex;justify-content:center;">
@@ -124,24 +123,19 @@ def draw_circle(percent):
                 font-size:14px;
                 font-weight:bold;
             ">
-                {completed}%<br>
+                {percent}%<br>
                 <span style='color:red;font-size:12px'>P {pending}%</span>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# ---------------- STUDY PLAN ----------------
+# ---------------- 50 DAY PLAN ----------------
 st.markdown("<h2 style='text-align:center;'>📅 50 DAY MASTER STUDY PLAN</h2>", unsafe_allow_html=True)
 
 start_date = datetime.now() + timedelta(days=1)
 
-subject_counts = {
-    "apt": 0,
-    "res": 0,
-    "eng": 0,
-    "fit": 0
-}
+subject_done = {"apt":0, "res":0, "eng":0, "fit":0}
 
 for day in range(1, 51):
 
@@ -151,42 +145,41 @@ for day in range(1, 51):
     col1, col2, col3, col4 = st.columns(4)
 
     sections = [
-        ("apt", "Aptitude", aptitude_topics[(day-1) % len(aptitude_topics)]),
-        ("res", "Reasoning", reasoning_topics[(day-1) % len(reasoning_topics)]),
-        ("eng", "Engineering Science", engineering_topics[(day-1) % len(engineering_topics)]),
-        ("fit", "Fitter Core", fitter_topics[(day-1) % len(fitter_topics)])
+        ("apt","Aptitude", aptitude_topics[(day-1) % len(aptitude_topics)]),
+        ("res","Reasoning", reasoning_topics[(day-1) % len(reasoning_topics)]),
+        ("eng","Engineering Science", engineering_topics[(day-1) % len(engineering_topics)]),
+        ("fit","Fitter Core", fitter_topics[(day-1) % len(fitter_topics)])
     ]
 
-    for i, col in enumerate([col1, col2, col3, col4]):
-        key_prefix, section_name, topic = sections[i]
-        key = f"day_{day}_{key_prefix}"
+    for i, col in enumerate([col1,col2,col3,col4]):
+        prefix, name, topic = sections[i]
+        key = f"day_{day}_{prefix}"
 
-        col.markdown(f"<div class='section-title'>{section_name}<br>(Topic: {topic})</div>", unsafe_allow_html=True)
+        col.markdown(f"<div class='section-title'>{name}<br>(Topic: {topic})</div>", unsafe_allow_html=True)
 
         checked = col.checkbox("Completed", value=progress.get(key, False), key=key)
         progress[key] = checked
 
         if checked:
-            subject_counts[key_prefix] += 1
+            subject_done[prefix] += 1
 
     st.markdown("---")
 
 save_data(progress)
 
-# ---------------- CUMULATIVE PERCENTAGE ----------------
+# ---------------- CUMULATIVE CALCULATION ----------------
 
 total_days = 50
 
-apt_percent = int((subject_counts["apt"] / total_days) * 100)
-res_percent = int((subject_counts["res"] / total_days) * 100)
-eng_percent = int((subject_counts["eng"] / total_days) * 100)
-fit_percent = int((subject_counts["fit"] / total_days) * 100)
+apt_percent = int((subject_done["apt"] / total_days) * 100)
+res_percent = int((subject_done["res"] / total_days) * 100)
+eng_percent = int((subject_done["eng"] / total_days) * 100)
+fit_percent = int((subject_done["fit"] / total_days) * 100)
 
 # ---------------- SUBJECT CIRCLES ----------------
+st.markdown("<h2 style='text-align:center;'>📊 Subject Wise Cumulative Completion</h2>", unsafe_allow_html=True)
 
-st.markdown("<h2 style='text-align:center;'>📊 Subject Wise Completion</h2>", unsafe_allow_html=True)
-
-c1, c2, c3, c4 = st.columns(4)
+c1,c2,c3,c4 = st.columns(4)
 
 with c1:
     st.markdown("<h4 style='text-align:center;'>Aptitude</h4>", unsafe_allow_html=True)
@@ -205,8 +198,7 @@ with c4:
     draw_circle(fit_percent)
 
 # ---------------- OVERALL ----------------
-
-total_done = subject_counts["apt"] + subject_counts["res"] + subject_counts["eng"] + subject_counts["fit"]
+total_done = subject_done["apt"] + subject_done["res"] + subject_done["eng"] + subject_done["fit"]
 total_possible = 50 * 4
 
 overall = int((total_done / total_possible) * 100)
