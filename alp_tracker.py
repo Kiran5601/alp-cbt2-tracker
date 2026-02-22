@@ -1,63 +1,88 @@
 import streamlit as st
 import random
+import base64
 
 st.set_page_config(page_title="KIRAN ALP CBT-2 PREPARATION TRACKER", layout="wide")
 
-# ---------------- BACKGROUND + STYLE ----------------
-st.markdown("""
+# ---------- LOAD BACKGROUND IMAGE ----------
+def get_base64(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+img_base64 = get_base64("background.jpg")   # change if filename is different
+
+# ---------- STYLING ----------
+st.markdown(f"""
 <style>
 
-/* Train Background with Light Blue Overlay */
-.stApp {
-    background: linear-gradient(rgba(214,236,255,0.85), rgba(214,236,255,0.85)),
-                url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d");
+/* Background Image */
+.stApp {{
+    background-image: url("data:image/jpg;base64,{img_base64}");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-}
+}}
+
+/* Overlay to improve readability */
+.stApp::before {{
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(214,236,255,0.75);
+    z-index: -1;
+}}
 
 /* Title */
-.main-title {
+.main-title {{
     text-align: center;
     font-size: 38px;
     font-weight: bold;
-    color: #0d47a1;
+    color: white;
     margin-bottom: 20px;
-}
+}}
 
 /* Section Box */
-.section-box {
-    background-color: rgba(255,255,255,0.95);
+.section-box {{
+    background-color: rgba(255,255,255,0.9);
     padding: 20px;
     border-radius: 15px;
     margin-bottom: 25px;
-    box-shadow: 0px 6px 15px rgba(0,0,0,0.15);
-}
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.3);
+}}
+
+/* Topic Text */
+.topic-text {{
+    color: #42a5f5;
+    font-weight: 600;
+}}
 
 /* Quote Box */
-.quote-box {
-    background-color: rgba(255,255,255,0.9);
+.quote-box {{
+    background-color: rgba(255,255,255,0.85);
     padding: 15px;
     border-radius: 10px;
     text-align:center;
     font-size:18px;
     margin-bottom:20px;
-}
+}}
 
-/* Circle container */
-.circle-container {
+.circle-container {{
     display:flex;
     justify-content:center;
     margin-top:20px;
-}
+}}
 
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- TITLE ----------------
+# ---------- TITLE ----------
 st.markdown('<div class="main-title">🚆 KIRAN ALP CBT-2 PREPARATION TRACKER 🚆</div>', unsafe_allow_html=True)
 
-# ---------------- MOTIVATIONAL QUOTES ----------------
+# ---------- MOTIVATIONAL QUOTES ----------
 quotes = [
     "Success in Railways starts with daily discipline.",
     "Every topic completed brings you closer to selection.",
@@ -68,7 +93,7 @@ quotes = [
 
 st.markdown(f'<div class="quote-box">💡 {random.choice(quotes)}</div>', unsafe_allow_html=True)
 
-# ---------------- FULL SYLLABUS ----------------
+# ---------- SYLLABUS ----------
 syllabus = {
 
     "📘 Mathematics": [
@@ -122,7 +147,7 @@ syllabus = {
     ]
 }
 
-# ---------------- TRACKING ----------------
+# ---------- TRACKING ----------
 total_topics = 0
 total_done = 0
 
@@ -134,7 +159,9 @@ for section, topics in syllabus.items():
     cols = st.columns(2)
 
     for i, topic in enumerate(topics):
-        if cols[i % 2].checkbox(topic, key=section + topic):
+        if cols[i % 2].checkbox(f"<span class='topic-text'>{topic}</span>",
+                                key=section + topic,
+                                unsafe_allow_html=True):
             done += 1
 
     total_topics += len(topics)
@@ -147,12 +174,9 @@ for section, topics in syllabus.items():
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------------- OVERALL CALCULATION ----------------
-overall = 0
-if total_topics > 0:
-    overall = int((total_done / total_topics) * 100)
+# ---------- OVERALL ----------
+overall = int((total_done / total_topics) * 100) if total_topics > 0 else 0
 
-# ---------------- ANIMATED CIRCLE ----------------
 circle_html = f"""
 <div class="circle-container">
 <svg width="220" height="220">
@@ -177,7 +201,7 @@ st.subheader("📊 Overall Completion")
 st.markdown(circle_html, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------------- CONFETTI ----------------
+# ---------- CONFETTI ----------
 if overall == 100:
     st.balloons()
     st.success("🎉 100% SYLLABUS COMPLETED! ALP SELECTION MODE ACTIVATED 🚆🔥")
