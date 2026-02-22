@@ -1,138 +1,195 @@
-# ============================================================
-# ================= 50 DAY STUDY PLAN ========================
-# ============================================================
 import streamlit as st
-st.header("50 DAY MASTER STUDY PLAN")
+import json
+import os
+import random
+from datetime import datetime, timedelta
 
-from math import pi
+st.set_page_config(page_title="KIRAN ALP CBT-2 PREPARATION TRACKER", layout="wide")
 
-def day_circle(completed_count):
-    radius = 45
-    circumference = 2 * pi * radius
-    segment = circumference / 4
+# ------------------ LIGHT BLUE BACKGROUND + WATERMARK ------------------
 
-    light_red = "#ffcdd2"
-    red = "#c62828"
-    green = "#2e7d32"
+st.markdown("""
+<style>
+.stApp {
+    background-color: #dff2ff;
+    background-image: url("https://cdn-icons-png.flaticon.com/512/3135/3135715.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 400px;
+    background-attachment: fixed;
+    background-blend-mode: lighten;
+}
+.big-title {
+    text-align: center;
+    font-size: 40px;
+    font-weight: bold;
+    color: #003366;
+}
+.quote-box {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #5c0080;
+    padding: 25px;
+}
+.percent-text {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+</style>
+""", unsafe_allow_html=True)
 
-    if completed_count == 4:
-        stroke_color = green
-        offset = 0
-    else:
-        stroke_color = red
-        offset = circumference - (segment * completed_count)
+# ------------------ HEADING ------------------
 
-    percent = int((completed_count / 4) * 100)
+st.markdown('<div class="big-title">KIRAN ALP CBT-2 PREPARATION TRACKER</div>', unsafe_allow_html=True)
 
-    circle_html = f"""
-    <div style="display:flex;justify-content:center;">
-    <svg width="130" height="130">
-        <circle cx="65" cy="65" r="{radius}"
-            stroke="{light_red}"
-            stroke-width="14"
-            fill="none"/>
-        <circle cx="65" cy="65" r="{radius}"
-            stroke="{stroke_color}"
-            stroke-width="14"
-            fill="none"
-            stroke-dasharray="{circumference}"
-            stroke-dashoffset="{offset}"
-            transform="rotate(-90 65 65)"
-            style="transition: stroke-dashoffset 0.8s ease-out;"
-        />
-        <text x="50%" y="50%" text-anchor="middle"
-            dy=".3em"
-            font-size="20"
-            font-weight="bold"
-            fill="{stroke_color}">
-            {percent}%
-        </text>
-    </svg>
-    </div>
-    """
-    st.markdown(circle_html, unsafe_allow_html=True)
+# ------------------ QUOTES ------------------
 
-# ---------------- FULL TOPIC LISTS ----------------
-
-arithmetic_topics = [
-"Number System","BODMAS","Decimals","Fractions","LCM","HCF",
-"Ratio & Proportion","Percentages","Mensuration",
-"Time & Work","Time & Distance","Simple Interest",
-"Compound Interest","Profit & Loss","Algebra",
-"Geometry","Trigonometry","Statistics",
-"Square Root","Age Problems","Calendar",
-"Clock","Pipes & Cistern"
+quotes = [
+    "Success doesn’t come from what you do occasionally.",
+    "Discipline is choosing between what you want now and what you want most.",
+    "Small daily progress leads to big success.",
+    "Your hard work will pay off.",
 ]
 
-reasoning_topics = [
-"Analogies","Alphabetical Series","Number Series",
-"Coding-Decoding","Mathematical Operations",
-"Relationships","Syllogism","Jumbling",
-"Venn Diagram","Data Interpretation",
-"Data Sufficiency","Conclusions",
-"Decision Making","Classification",
-"Directions","Statement-Arguments"
-]
+st.markdown(f'<div class="quote-box">{random.choice(quotes)}</div>', unsafe_allow_html=True)
 
-engineering_topics = [
-"Engineering Drawing","Views & Projections",
-"Drawing Instruments","Units & Measurement",
-"Mass Weight Density","Work Power Energy",
-"Heat & Temperature","Basic Electricity",
-"Levers & Machines","Occupational Safety",
-"Environment","IT Literacy"
-]
+# ------------------ SYLLABUS ------------------
 
-fitter_topics = [
-"Safety","Marking Tools","Metals",
-"Hand Tools","Measuring Tools","Cutting Tools",
-"Sheet Metal Work","Welding",
-"Drilling & Reaming","Grinding",
-"Lathe Construction","Lathe Operations",
-"Limits & Fits","Heat Treatment",
-"Bearings","Hydraulics","Jigs & Fixtures"
-]
+syllabus = {
+    "Arithmetic": [
+        "Number System","BODMAS","Decimals","Fractions","LCM & HCF",
+        "Ratio & Proportion","Percentages","Mensuration","Time & Work",
+        "Time & Distance","Simple Interest","Compound Interest",
+        "Profit & Loss","Algebra","Geometry","Trigonometry",
+        "Statistics","Square Root","Age","Calendar & Clock","Pipes & Cistern"
+    ],
+    "Reasoning": [
+        "Analogies","Alphabet Series","Number Series","Coding Decoding",
+        "Mathematical Operations","Relationships","Syllogism",
+        "Jumbling","Venn Diagram","Data Interpretation",
+        "Decision Making","Analytical Reasoning","Classification",
+        "Directions","Statement & Arguments"
+    ],
+    "Engineering Science": [
+        "Engineering Drawing","Units & Measurements",
+        "Mass Weight Density","Work Power Energy",
+        "Speed Velocity","Heat Temperature",
+        "Basic Electricity","Levers","Simple Machines",
+        "Occupational Safety","Environment","IT Literacy"
+    ],
+    "Fitter Core": [
+        "Occupational Safety","Marking Tools","Metals",
+        "Hand Tools","Measuring Tools","Cutting Tools",
+        "Sheet Metal","Brazing","Riveting","Welding",
+        "Drilling","Threads","Grinding","Limits & Fits",
+        "Lathe Construction","Lathe Accessories",
+        "Lathe Tools","Lathe Operations","Maintenance"
+    ]
+}
+
+# ------------------ SAVE DATA ------------------
+
+DATA_FILE = "progress.json"
+
+def load_progress():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    return {}
+
+def save_progress(data):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f)
+
+progress = load_progress()
+
+# ------------------ DISPLAY CHECKLIST ------------------
+
+total_topics = 0
+completed_topics = 0
+
+for section, topics in syllabus.items():
+    st.subheader(section)
+    for topic in topics:
+        key = f"{section}_{topic}"
+        checked = st.checkbox(topic, value=progress.get(key, False), key=key)
+        progress[key] = checked
+        total_topics += 1
+        if checked:
+            completed_topics += 1
+
+save_progress(progress)
+
+# ------------------ PERCENTAGE CALCULATION ------------------
+
+percentage = int((completed_topics / total_topics) * 100)
+pending = 100 - percentage
+
+# ------------------ ANIMATED PROGRESS ------------------
+
+progress_bar = st.progress(0)
+
+for i in range(percentage + 1):
+    progress_bar.progress(i)
+
+if percentage == 100:
+    st.balloons()
+    st.success("🎉 FULL SYLLABUS COMPLETED! 🎉")
+
+# ------------------ PERCENT DISPLAY ------------------
+
+if percentage < 100:
+    st.markdown(
+        f'<div class="percent-text" style="color:red;">Completed: {percentage}% | Pending: {pending}%</div>',
+        unsafe_allow_html=True
+    )
+else:
+    st.markdown(
+        f'<div class="percent-text" style="color:green;">Completed: 100% | Pending: 0%</div>',
+        unsafe_allow_html=True
+    )
+
+# ------------------ 50 DAY MASTER PLAN ------------------
+
+st.markdown("## 50 DAY MASTER STUDY PLAN")
 
 start_date = datetime.now() + timedelta(days=1)
 
-total_slots = 0
-completed_slots = 0
-
 for day in range(1, 51):
-
     date = start_date + timedelta(days=day-1)
+    st.markdown(f"### Day {day} - {date.strftime('%d %B %Y')}")
 
-    st.markdown('<div class="section-box">', unsafe_allow_html=True)
-    st.subheader(f"Day {day} – {date.strftime('%d %B %Y')}")
+    col1, col2, col3, col4 = st.columns(4)
 
-    # Proper rotation
-    arithmetic = arithmetic_topics[(day-1) % len(arithmetic_topics)]
-    reasoning = reasoning_topics[(day-1) % len(reasoning_topics)]
-    engineering = engineering_topics[(day-1) % len(engineering_topics)]
-    fitter = fitter_topics[(day-1) % len(fitter_topics)]
+    tasks = [
+        "Aptitude (6-8 AM)",
+        "Mock Test (10-1 PM)",
+        "Engineering Science (5-7 PM)",
+        "Fitter Core (9PM-12AM)"
+    ]
 
-    daily = {
-        "6-8 AM Aptitude": f"{arithmetic} + {reasoning}",
-        "10-1 PM Mock Test": "Full Length Mock + Analysis",
-        "5-7 PM Engineering Science": engineering,
-        "9-12 PM Fitter Core I & II": fitter
-    }
+    day_completed = 0
 
-    completed_today = 0
-
-    for slot, topic in daily.items():
-        key = f"Day{day}_{slot}"
-        default_value = progress_data.get(key, False)
-
-        checked = st.checkbox(f"{slot} → {topic}", value=default_value, key=key)
-        progress_data[key] = checked
-
-        total_slots += 1
+    for i in range(4):
+        task_key = f"day{day}_{i}"
+        checked = col1.checkbox(tasks[i] if i==0 else "", value=progress.get(task_key, False), key=task_key)
+        progress[task_key] = checked
         if checked:
-            completed_today += 1
-            completed_slots += 1
+            day_completed += 1
 
-    # Circular progress per day
-    day_circle(completed_today)
+    circle_percent = int((day_completed/4)*100)
 
-    st.markdown('</div>', unsafe_allow_html=True)
+    if circle_percent == 100:
+        color = "green"
+    else:
+        color = "red"
+
+    st.markdown(
+        f'<div style="text-align:center; font-size:20px; font-weight:bold; color:{color};">'
+        f"Day {day} Completion: {circle_percent}%</div>",
+        unsafe_allow_html=True
+    )
+
+save_progress(progress)
