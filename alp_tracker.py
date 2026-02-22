@@ -6,48 +6,64 @@ from datetime import datetime, timedelta
 
 st.set_page_config(page_title="Kiran ALP CBT-2 Preparation", layout="wide")
 
-# ------------------- STYLING -------------------
+# ---------------- STYLE ----------------
 
 st.markdown("""
 <style>
-body { background-color: #e6f2ff; }
+body {
+    background-color:#e6f2ff;
+}
 
 .main-title {
     text-align:center;
     font-size:42px;
     font-weight:bold;
     color:#0d47a1;
+    margin-bottom:15px;
 }
 
 .quote {
     text-align:center;
-    font-size:24px;
+    font-size:22px;
     color:#6a1b9a;
-    margin-top:20px;
     margin-bottom:30px;
 }
 
-.circle-container {
+.section-box {
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+}
+
+.circle {
+    width:130px;
+    height:130px;
+    border-radius:50%;
     display:flex;
+    align-items:center;
     justify-content:center;
-    margin-top:10px;
+    font-size:22px;
+    font-weight:bold;
+    margin:auto;
+    color:black;
 }
 </style>
 """, unsafe_allow_html=True)
+
+# ---------------- HEADER ----------------
 
 st.markdown("<div class='main-title'>KIRAN ALP CBT-2 PREPARATION TRACKER</div>", unsafe_allow_html=True)
 
 quotes = [
     "Small daily progress leads to big success.",
-    "Consistency builds railway rank.",
-    "50 Days. One Goal.",
-    "Discipline = Success.",
-    "Focus like a topper."
+    "Consistency builds rank.",
+    "Focus 50 Days = Secure Job.",
+    "Discipline creates Railway Officer."
 ]
 
 st.markdown(f"<div class='quote'>{random.choice(quotes)}</div>", unsafe_allow_html=True)
 
-# ------------------- SAVE SYSTEM -------------------
+# ---------------- SAVE SYSTEM ----------------
 
 FILE = "progress.json"
 
@@ -63,119 +79,71 @@ def save_data(data):
 
 progress = load_data()
 
-# ------------------- TOPIC LISTS -------------------
+# ---------------- TOPICS ----------------
 
-aptitude_topics = [
-    "Number System","LCM & HCF","Ratio & Proportion","Percentages",
-    "Ages","Time & Work","Time & Distance","Simple Interest",
-    "Compound Interest","Profit & Loss","Algebra","Geometry",
-    "Trigonometry","Statistics","Calendar & Clock"
-]
+aptitude_topics = ["Number System","Ages","Percentages","Time & Work","Ratio","Profit & Loss"]
+engg_topics = ["Units","Work Power Energy","Heat","Basic Electricity","Safety"]
+fitter_topics = ["Marking Tools","Measuring Tools","Cutting Tools","Welding","Lathe Operations"]
 
-engg_topics = [
-    "Units","Mass & Density","Work Power Energy","Speed & Velocity",
-    "Heat","Basic Electricity","Levers","Simple Machines",
-    "Safety","Environment","IT Literacy"
-]
+# ---------------- CIRCLE FUNCTION ----------------
 
-fitter_topics = [
-    "Marking Tools","Hand Tools","Measuring Tools","Cutting Tools",
-    "Sheet Metal","Welding","Drilling","Grinding",
-    "Lathe Construction","Lathe Operations"
-]
-
-# ------------------- CIRCLE FUNCTION -------------------
-
-def draw_circle(percent, size=120):
+def draw_circle(percent):
     color = "#ff4d4d"
     if percent == 100:
         color = "#00cc44"
 
+    deg = percent * 3.6
+
     st.markdown(f"""
-    <div class="circle-container">
-        <div style="
-            width:{size}px;
-            height:{size}px;
-            border-radius:50%;
-            background:conic-gradient(
-                {color} {percent*3.6}deg,
-                #ffcccc {percent*3.6}deg
+    <div style="display:flex;justify-content:center;">
+        <div class="circle" style="
+            background: conic-gradient(
+                {color} {deg}deg,
+                #ffcccc {deg}deg
             );
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-size:22px;
-            font-weight:bold;
-            color:black;
         ">
             {percent}%
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# ------------------- 50 DAY PLAN -------------------
-
-st.markdown("## 50 DAY MASTER STUDY PLAN")
+# ---------------- DAY SYSTEM ----------------
 
 start_date = datetime.now() + timedelta(days=1)
+day = 1
+date = start_date.strftime("%d %B %Y")
 
-total_completed = 0
-total_tasks = 50 * 4
+st.markdown(f"## Day {day} - {date}")
 
-for day in range(1, 51):
+# ---------------- 4 SECTIONS HORIZONTAL ----------------
 
-    date = start_date + timedelta(days=day-1)
+col1, col2, col3, col4 = st.columns(4)
 
-    st.markdown(f"### Day {day} - {date.strftime('%d %B %Y')}")
+sections = [
+    ("Aptitude", aptitude_topics[0]),
+    ("Mock Test", "Practice"),
+    ("Engineering Science", engg_topics[0]),
+    ("Fitter Core", fitter_topics[0])
+]
 
-    col1, col2, col3, col4 = st.columns(4)
+for idx, col in enumerate([col1, col2, col3, col4]):
+    section_name, topic = sections[idx]
+    key = f"day_{day}_{idx}"
 
-    apt_topic = aptitude_topics[(day-1) % len(aptitude_topics)]
-    eng_topic = engg_topics[(day-1) % len(engg_topics)]
-    fit_topic = fitter_topics[(day-1) % len(fitter_topics)]
+    col.markdown(f"<div class='section-box'>{section_name}<br>(Topic: {topic})</div>", unsafe_allow_html=True)
 
-    sessions = [
-        f"Aptitude (Topic: {apt_topic})",
-        f"Mock Test (Topic: Practice)",
-        f"Engineering Science (Topic: {eng_topic})",
-        f"Fitter Core (Topic: {fit_topic})"
-    ]
+    checked = col.checkbox("Completed", value=progress.get(key, False), key=key)
+    progress[key] = checked
 
-    day_completed = 0
+    percent = 100 if checked else 0
 
-    for i, col in enumerate([col1, col2, col3, col4]):
-        key = f"day_{day}_{i}"
-        checked = col.checkbox(sessions[i], value=progress.get(key, False), key=key)
-        progress[key] = checked
+    col.markdown("##### Progress")
+    with col:
+        draw_circle(percent)
 
-        percent = 100 if checked else 0
-        col.markdown("<br>", unsafe_allow_html=True)
-        col.markdown("Progress:")
-        draw_circle(percent, size=90)
+save_data(progress)
 
-        if checked:
-            day_completed += 1
-            total_completed += 1
-
-    save_data(progress)
-
-    day_percent = int((day_completed / 4) * 100)
-
-    st.markdown("#### Daily Overall Progress")
-    draw_circle(day_percent, size=140)
-
-    if day_percent == 100:
-        st.success(f"Day {day} Fully Completed!")
-
-    st.markdown("---")
-
-# ------------------- FINAL OVERALL PROGRESS -------------------
-
-overall_percent = int((total_completed / total_tasks) * 100)
-
-st.markdown("## 🚀 COMPLETE SYLLABUS PROGRESS")
-draw_circle(overall_percent, size=200)
-
-if overall_percent == 100:
+# Celebration
+if all(progress.get(f"day_{day}_{i}", False) for i in range(4)):
     st.balloons()
-    st.success("🎉 Entire 50-Day Syllabus Completed!")
+    st.success("🎉 All Sections Completed for Today!")
