@@ -1,22 +1,20 @@
 import streamlit as st
-import random
 import base64
+import random
 
+# ---------------- PAGE CONFIG ----------------
 st.set_page_config(page_title="KIRAN ALP CBT-2 PREPARATION TRACKER", layout="wide")
 
-# ---------- LOAD BACKGROUND IMAGE ----------
+# ---------------- LOAD BACKGROUND IMAGE ----------------
 def get_base64(file):
     with open(file, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
+        return base64.b64encode(f.read()).decode()
 
-img_base64 = get_base64("background.jpg")   # change if filename is different
+img_base64 = get_base64("background.jpg")
 
-# ---------- STYLING ----------
+# ---------------- CUSTOM STYLING ----------------
 st.markdown(f"""
 <style>
-
-/* Background Image */
 .stApp {{
     background-image: url("data:image/jpg;base64,{img_base64}");
     background-size: cover;
@@ -24,184 +22,152 @@ st.markdown(f"""
     background-attachment: fixed;
 }}
 
-/* Overlay to improve readability */
-.stApp::before {{
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(214,236,255,0.75);
-    z-index: -1;
+h1 {{
+    text-align: center;
+    color: #00ccff;
+    font-size: 40px;
 }}
 
-/* Title */
-.main-title {{
-    text-align: center;
-    font-size: 38px;
-    font-weight: bold;
-    color: white;
+.section-box {{
+    background-color: rgba(255,255,255,0.90);
+    padding: 20px;
+    border-radius: 15px;
     margin-bottom: 20px;
 }}
 
-/* Section Box */
-.section-box {{
-    background-color: rgba(255,255,255,0.9);
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-    box-shadow: 0px 6px 15px rgba(0,0,0,0.3);
+.topic-title {{
+    color: #00ccff;
+    font-weight: bold;
+    font-size: 18px;
 }}
-
-/* Topic Text */
-.topic-text {{
-    color: #42a5f5;
-    font-weight: 600;
-}}
-
-/* Quote Box */
-.quote-box {{
-    background-color: rgba(255,255,255,0.85);
-    padding: 15px;
-    border-radius: 10px;
-    text-align:center;
-    font-size:18px;
-    margin-bottom:20px;
-}}
-
-.circle-container {{
-    display:flex;
-    justify-content:center;
-    margin-top:20px;
-}}
-
 </style>
 """, unsafe_allow_html=True)
 
-# ---------- TITLE ----------
-st.markdown('<div class="main-title">🚆 KIRAN ALP CBT-2 PREPARATION TRACKER 🚆</div>', unsafe_allow_html=True)
+# ---------------- TITLE ----------------
+st.markdown("<h1>KIRAN ALP CBT-2 PREPARATION TRACKER</h1>", unsafe_allow_html=True)
 
-# ---------- MOTIVATIONAL QUOTES ----------
+# ---------------- MOTIVATIONAL QUOTES ----------------
 quotes = [
-    "Success in Railways starts with daily discipline.",
-    "Every topic completed brings you closer to selection.",
-    "Consistency + Practice = Railway Job.",
-    "Small daily progress creates big exam success.",
-    "Hard work today, Railway uniform tomorrow."
+    "Success is the sum of small efforts repeated daily.",
+    "Your railway dream is closer than you think.",
+    "Discipline today, selection tomorrow.",
+    "Push yourself — ALP badge is waiting.",
+    "Consistency beats talent."
 ]
 
-st.markdown(f'<div class="quote-box">💡 {random.choice(quotes)}</div>', unsafe_allow_html=True)
+st.info(random.choice(quotes))
 
-# ---------- SYLLABUS ----------
+# ---------------- SYLLABUS ----------------
+
 syllabus = {
 
-    "📘 Mathematics": [
-        "Number System","BODMAS","Decimals","Fractions","LCM & HCF",
-        "Ratio and Proportion","Percentages","Mensuration",
-        "Time and Work","Time and Distance",
-        "Simple & Compound Interest","Profit and Loss",
-        "Algebra","Geometry","Trigonometry",
-        "Statistics","Square Root","Age Problems",
-        "Calendar & Clock","Pipes & Cistern"
+    "PART A - MATHEMATICS": [
+        "Number System",
+        "BODMAS",
+        "Decimals & Fractions",
+        "LCM & HCF",
+        "Ratio & Proportion",
+        "Percentages",
+        "Mensuration",
+        "Time and Work",
+        "Time and Distance",
+        "Simple & Compound Interest",
+        "Profit and Loss",
+        "Algebra",
+        "Geometry & Trigonometry",
+        "Elementary Statistics",
+        "Square Root",
+        "Age Calculations",
+        "Calendar & Clock",
+        "Pipes & Cistern"
     ],
 
-    "🧠 Reasoning": [
-        "Analogies","Alphabetical & Number Series",
-        "Coding-Decoding","Mathematical Operations",
-        "Relationships","Syllogism","Jumbling",
-        "Venn Diagram","Data Interpretation",
-        "Decision Making","Similarities & Differences",
-        "Analytical Reasoning","Classification",
-        "Directions","Statement-Arguments"
+    "PART A - REASONING": [
+        "Analogies",
+        "Alphabetical Series",
+        "Number Series",
+        "Coding & Decoding",
+        "Mathematical Operations",
+        "Relationships",
+        "Syllogism",
+        "Jumbling",
+        "Venn Diagram",
+        "Data Interpretation",
+        "Decision Making",
+        "Similarities & Differences",
+        "Analytical Reasoning",
+        "Classification",
+        "Directions",
+        "Statement & Arguments"
     ],
 
-    "🔬 Science & Engineering": [
-        "Engineering Drawing","Drawing Instruments & Lines",
-        "Units & Measurements","Mass, Weight & Density",
-        "Work, Power & Energy","Speed & Velocity",
-        "Heat & Temperature","Basic Electricity",
-        "Levers & Simple Machines","Occupational Safety",
-        "Environment","IT Literacy"
+    "PART A - SCIENCE & ENGINEERING": [
+        "Engineering Drawing",
+        "Units & Measurements",
+        "Mass Weight & Density",
+        "Work Power & Energy",
+        "Speed & Velocity",
+        "Heat & Temperature",
+        "Basic Electricity",
+        "Levers & Simple Machines",
+        "Occupational Safety",
+        "Environment & IT Literacy"
     ],
 
-    "🔧 Fitter 1st Year": [
-        "Introduction","Occupational Health & Safety",
-        "Marking & Marking Tools","Metals",
-        "Hand Tools","Measurement & Measuring Tools",
-        "Cutting Tools & Operations","Sheet Metal Work",
-        "Brazing & Soldering","Riveting",
-        "Welding","Drilling & Reaming",
-        "Screw Threads","Grinding",
-        "Limits & Fits","Lathe Construction",
-        "Lathe Accessories","Lathe Tools",
-        "Lathe Operations","Preventive Maintenance"
+    "PART B - TRADE THEORY (1st Year)": [
+        "Occupational Health and Safety",
+        "Marking and Marking Tools",
+        "Metals",
+        "Hand Tools",
+        "Measurement Tools",
+        "Cutting Tools",
+        "Sheet Metal Work",
+        "Brazing and Soldering",
+        "Riveting",
+        "Welding",
+        "Drilling and Reaming",
+        "Screw Threads",
+        "Grinding",
+        "Limits and Fits",
+        "Lathe Construction",
+        "Lathe Accessories",
+        "Lathe Tools",
+        "Lathe Operations",
+        "Preventive Maintenance"
     ],
 
-    "⚙ Fitter 2nd Year": [
-        "Fasteners","Gauges","Pipe Fittings",
-        "Bearings","Jigs & Fixtures",
-        "Working Materials","Transmission of Power",
-        "Hydraulics","Lubricants & Coolants",
-        "Lifting Appliances","CNC Basics"
+    "PART B - TRADE THEORY (2nd Year)": [
+        "Fasteners",
+        "Gauges",
+        "Drilling Tools",
+        "Heat Treatment",
+        "Bearings",
+        "Pipe Fittings",
+        "Jigs and Fixtures"
     ]
 }
 
-# ---------- TRACKING ----------
-total_topics = 0
-total_done = 0
+# ---------------- DISPLAY SECTIONS ----------------
 
 for section, topics in syllabus.items():
+
     st.markdown('<div class="section-box">', unsafe_allow_html=True)
     st.subheader(section)
 
-    done = 0
-    cols = st.columns(2)
+    completed = 0
 
-    for i, topic in enumerate(topics):
-        if cols[i % 2].checkbox(f"<span class='topic-text'>{topic}</span>",
-                                key=section + topic,
-                                unsafe_allow_html=True):
-            done += 1
+    for topic in topics:
+        checked = st.checkbox(topic, key=section+topic)
+        if checked:
+            completed += 1
 
-    total_topics += len(topics)
-    total_done += done
+    percentage = int((completed / len(topics)) * 100)
 
-    percent = (done / len(topics)) * 100
-    st.progress(percent / 100)
-    st.write(f"Completed: {percent:.1f}%")
-    st.write(f"Pending: {100 - percent:.1f}%")
+    st.progress(percentage / 100)
+    st.write(f"Completion: {percentage}%")
+
+    if percentage == 100:
+        st.success("🎉 Section Completed! Excellent Work!")
+        st.balloons()
 
     st.markdown('</div>', unsafe_allow_html=True)
-
-# ---------- OVERALL ----------
-overall = int((total_done / total_topics) * 100) if total_topics > 0 else 0
-
-circle_html = f"""
-<div class="circle-container">
-<svg width="220" height="220">
-  <circle cx="110" cy="110" r="90" stroke="#bbdefb" stroke-width="18" fill="none"/>
-  <circle cx="110" cy="110" r="90"
-    stroke="#1565c0"
-    stroke-width="18"
-    fill="none"
-    stroke-dasharray="565"
-    stroke-dashoffset="{565 - (565 * overall / 100)}"
-    stroke-linecap="round"
-    transform="rotate(-90 110 110)"
-  />
-  <text x="50%" y="50%" text-anchor="middle" dy=".3em"
-    font-size="32" fill="#0d47a1">{overall}%</text>
-</svg>
-</div>
-"""
-
-st.markdown('<div class="section-box">', unsafe_allow_html=True)
-st.subheader("📊 Overall Completion")
-st.markdown(circle_html, unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
-# ---------- CONFETTI ----------
-if overall == 100:
-    st.balloons()
-    st.success("🎉 100% SYLLABUS COMPLETED! ALP SELECTION MODE ACTIVATED 🚆🔥")
