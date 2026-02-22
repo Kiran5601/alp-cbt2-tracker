@@ -41,7 +41,7 @@ st.markdown("""
 
 .main-title {
     text-align:center;
-    font-size:48px;
+    font-size:50px;
     font-weight:900;
     background: linear-gradient(90deg,#1565c0,#8e24aa);
     -webkit-background-clip:text;
@@ -79,29 +79,32 @@ quotes = [
 
 st.markdown(f'<div class="quote-box">💡 {random.choice(quotes)}</div>', unsafe_allow_html=True)
 
-# ---------------- ANIMATED PROGRESS BAR ----------------
-def animated_progress_bar(percent):
-    progress_placeholder = st.empty()
-    for i in range(percent + 1):
-        progress_placeholder.progress(i / 100)
-        time.sleep(0.01)
-
-# ---------------- ANIMATED CIRCLE ----------------
+# ---------------- ANIMATED COLOR CIRCLE ----------------
 def animated_circle(percent):
+    color = "#2e7d32" if percent == 100 else "#2e7d32"
+    remaining_color = "#c62828"
+
     circle_html = f"""
     <div style="display:flex;justify-content:center;">
-    <svg width="150" height="150">
-        <circle cx="75" cy="75" r="65" stroke="#d0e3ff" stroke-width="12" fill="none"/>
-        <circle cx="75" cy="75" r="65"
-            stroke="#1565c0"
-            stroke-width="12"
+    <svg width="180" height="180">
+        <circle cx="90" cy="90" r="75" stroke="#eee" stroke-width="18" fill="none"/>
+        <circle cx="90" cy="90" r="75"
+            stroke="{color}"
+            stroke-width="18"
             fill="none"
-            stroke-dasharray="408"
-            stroke-dashoffset="{408 - (408 * percent / 100)}"
-            style="transition: stroke-dashoffset 1.2s ease-out;"/>
-        <text x="50%" y="50%" text-anchor="middle" dy=".3em"
-            font-size="24" font-weight="bold" fill="#000">
+            stroke-dasharray="471"
+            stroke-dashoffset="{471 - (471 * percent / 100)}"
+            stroke-linecap="round"
+            transform="rotate(-90 90 90)"
+            style="transition: stroke-dashoffset 1.5s ease-out;"
+        />
+        <text x="50%" y="45%" text-anchor="middle"
+            font-size="34" font-weight="900" fill="{color}">
             {percent}%
+        </text>
+        <text x="50%" y="65%" text-anchor="middle"
+            font-size="16" font-weight="bold" fill="{remaining_color}">
+            PENDING {100-percent}%
         </text>
     </svg>
     </div>
@@ -144,7 +147,6 @@ syllabus = {
 total_topics = 0
 total_done = 0
 
-# ---------------- DISPLAY ----------------
 for section, topics in syllabus.items():
 
     st.markdown('<div class="section-box">', unsafe_allow_html=True)
@@ -157,7 +159,6 @@ for section, topics in syllabus.items():
         default_value = progress_data.get(key, False)
         checked = st.checkbox(topic, value=default_value, key=key)
         progress_data[key] = checked
-
         if checked:
             done += 1
 
@@ -165,12 +166,8 @@ for section, topics in syllabus.items():
     total_done += done
 
     percent = int((done / len(topics)) * 100)
-    pending = 100 - percent
 
-    animated_progress_bar(percent)
     animated_circle(percent)
-
-    st.write(f"Completed: {percent}% | Pending: {pending}%")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -178,14 +175,10 @@ save_progress(progress_data)
 
 # ---------------- OVERALL ----------------
 overall = int((total_done / total_topics) * 100)
-overall_pending = 100 - overall
 
-st.subheader("Overall Completion")
-animated_progress_bar(overall)
+st.subheader("Overall Completion Status")
 animated_circle(overall)
-
-st.write(f"Overall Completed: {overall}% | Pending: {overall_pending}%")
 
 if overall == 100:
     st.balloons()
-    st.success("🎉 Congratulations! Full Syllabus Completed!")
+    st.success("🎉 100% Completed! You Are Exam Ready!")
