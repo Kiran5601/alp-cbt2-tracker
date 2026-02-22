@@ -1,13 +1,13 @@
 import streamlit as st
-import random
 import json
 import os
-import time
+import random
+from datetime import datetime, timedelta
 
-st.set_page_config(page_title="KIRAN ALP CBT-2 PREPARATION TRACKER", layout="wide")
+st.set_page_config(page_title="KIRAN ALP MASTER DASHBOARD", layout="wide")
 
-# ---------------- SAVE FILE ----------------
-SAVE_FILE = "progress.json"
+# ---------------- SAVE SYSTEM ----------------
+SAVE_FILE = "master_progress.json"
 
 def load_progress():
     if os.path.exists(SAVE_FILE):
@@ -24,20 +24,7 @@ progress_data = load_progress()
 # ---------------- STYLE ----------------
 st.markdown("""
 <style>
-.stApp { background-color: #eaf4ff; }
-
-.stApp::before {
-    content: "";
-    background-image: url("https://img.freepik.com/free-vector/student-studying-desk_23-2148880412.jpg");
-    background-repeat: no-repeat;
-    background-position: center 70%;
-    background-size: 600px;
-    opacity: 0.05;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-}
+.stApp { background-color: #eef6ff; }
 
 .main-title {
     text-align:center;
@@ -50,10 +37,9 @@ st.markdown("""
 
 .quote-box {
     text-align:center;
-    font-size:24px;
+    font-size:22px;
     font-weight:600;
-    margin-top:40px;
-    margin-bottom:60px;
+    margin:30px 0 50px 0;
     color:#6a1b9a;
 }
 
@@ -67,43 +53,42 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- TITLE ----------------
-st.markdown('<div class="main-title">KIRAN ALP CBT-2 PREPARATION TRACKER</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">KIRAN ALP CBT-2 MASTER TRACKER</div>', unsafe_allow_html=True)
 
 quotes = [
-"Small daily progress leads to big success.",
-"Discipline today, selection tomorrow.",
 "Consistency beats talent.",
+"Discipline today, selection tomorrow.",
+"Small progress daily = Big success.",
+"Railway uniform loading...",
 "Stay focused. You are closer than you think."
 ]
 
 st.markdown(f'<div class="quote-box">💡 {random.choice(quotes)}</div>', unsafe_allow_html=True)
 
-# ---------------- ANIMATED COLOR CIRCLE ----------------
+# ---------------- ANIMATED CIRCLE ----------------
 def animated_circle(percent):
-    color = "#2e7d32" if percent == 100 else "#2e7d32"
-    remaining_color = "#c62828"
+    green = "#2e7d32"
+    red = "#c62828"
 
     circle_html = f"""
     <div style="display:flex;justify-content:center;">
-    <svg width="180" height="180">
-        <circle cx="90" cy="90" r="75" stroke="#eee" stroke-width="18" fill="none"/>
-        <circle cx="90" cy="90" r="75"
-            stroke="{color}"
+    <svg width="200" height="200">
+        <circle cx="100" cy="100" r="85" stroke="#eee" stroke-width="18" fill="none"/>
+        <circle cx="100" cy="100" r="85"
+            stroke="{green}"
             stroke-width="18"
             fill="none"
-            stroke-dasharray="471"
-            stroke-dashoffset="{471 - (471 * percent / 100)}"
-            stroke-linecap="round"
-            transform="rotate(-90 90 90)"
+            stroke-dasharray="534"
+            stroke-dashoffset="{534 - (534 * percent / 100)}"
+            transform="rotate(-90 100 100)"
             style="transition: stroke-dashoffset 1.5s ease-out;"
         />
         <text x="50%" y="45%" text-anchor="middle"
-            font-size="34" font-weight="900" fill="{color}">
+            font-size="36" font-weight="900" fill="{green}">
             {percent}%
         </text>
         <text x="50%" y="65%" text-anchor="middle"
-            font-size="16" font-weight="bold" fill="{remaining_color}">
+            font-size="18" font-weight="bold" fill="{red}">
             PENDING {100-percent}%
         </text>
     </svg>
@@ -111,37 +96,68 @@ def animated_circle(percent):
     """
     st.markdown(circle_html, unsafe_allow_html=True)
 
-# ---------------- SYLLABUS ----------------
+# ============================================================
+# ================= 50 DAY STUDY PLAN (TOP) ==================
+# ============================================================
+
+st.header("📅 50 DAY STUDY PLAN")
+
+start_date = datetime.now() + timedelta(days=1)
+
+aptitude = ["Number System","Percentages","Time & Work","Profit & Loss"]
+engg = ["Units","Heat","Electricity","Drawing"]
+fitter = ["Welding","Lathe","Grinding","Bearings"]
+
+total_slots = 0
+completed_slots = 0
+
+for day in range(1, 51):
+
+    date = start_date + timedelta(days=day-1)
+
+    st.markdown('<div class="section-box">', unsafe_allow_html=True)
+    st.subheader(f"Day {day} – {date.strftime('%d %B %Y')}")
+
+    daily = {
+        "6-8 AM Aptitude": aptitude[day % len(aptitude)],
+        "10-1 PM Mock Test": "Full Mock + Analysis",
+        "5-7 PM Engineering Science": engg[day % len(engg)],
+        "9-12 PM Fitter Core": fitter[day % len(fitter)]
+    }
+
+    for slot, topic in daily.items():
+        key = f"Day{day}_{slot}"
+        default_value = progress_data.get(key, False)
+        checked = st.checkbox(f"{slot} → {topic}", value=default_value, key=key)
+        progress_data[key] = checked
+
+        total_slots += 1
+        if checked:
+            completed_slots += 1
+
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# ============================================================
+# ================= FULL SYLLABUS TRACKER ====================
+# ============================================================
+
+st.header("📘 FULL SYLLABUS TRACKER")
+
 syllabus = {
-"ARITHMETIC": ["Number System","BODMAS","Decimals","Fractions","LCM","HCF",
-"Ratio & Proportion","Percentages","Mensuration","Time & Work",
-"Time & Distance","Simple Interest","Compound Interest",
-"Profit & Loss","Algebra","Geometry","Trigonometry",
-"Elementary Statistics","Square Root","Age Problems",
-"Calendar","Clock","Pipes & Cistern"],
+"ARITHMETIC": ["Number System","BODMAS","LCM & HCF","Percentages",
+"Time & Work","Time & Distance","Profit & Loss",
+"Simple & Compound Interest","Algebra","Geometry","Trigonometry"],
 
-"REASONING": ["Analogies","Alphabetical Series","Number Series",
-"Coding-Decoding","Mathematical Operations","Relationships",
-"Syllogism","Jumbling","Venn Diagram","Data Interpretation",
-"Data Sufficiency","Conclusions","Decision Making",
-"Similarities & Differences","Analytical Reasoning",
-"Classification","Directions","Statement-Arguments","Assumptions"],
+"REASONING": ["Analogies","Series","Coding-Decoding",
+"Syllogism","Venn Diagram","Directions",
+"Data Interpretation","Classification"],
 
-"ENGINEERING SCIENCE": ["Engineering Drawing","Views","Drawing Instruments",
-"Lines","Geometric Figures","Units & Measurements",
-"Mass Weight Density","Work Power Energy",
-"Speed & Velocity","Heat & Temperature",
-"Basic Electricity","Levers","Occupational Safety",
-"Environment","IT Literacy"],
+"ENGINEERING SCIENCE": ["Engineering Drawing","Units & Measurement",
+"Work Power Energy","Heat & Temperature",
+"Basic Electricity","Levers","Safety","Environment"],
 
-"TRADE THEORY 1st YEAR": ["Introduction","Safety","Marking Tools","Metals",
-"Hand Tools","Measuring Tools","Cutting Tools",
-"Sheet Metal","Welding","Lathe Construction",
-"Lathe Tools","Lathe Operations"],
-
-"TRADE THEORY 2nd YEAR": ["Fasteners","Gauges","Metrology",
-"Heat Treatment","Bearings","Pipe Fittings",
-"Jigs & Fixtures","Hydraulics","Lubricants"]
+"FITTER CORE I & II": ["Welding","Lathe","Grinding",
+"Bearings","Hydraulics","Metrology"]
 }
 
 total_topics = 0
@@ -166,19 +182,27 @@ for section, topics in syllabus.items():
     total_done += done
 
     percent = int((done / len(topics)) * 100)
-
     animated_circle(percent)
 
     st.markdown('</div>', unsafe_allow_html=True)
 
+# ============================================================
+# ================= MASTER OVERALL ============================
+# ============================================================
+
 save_progress(progress_data)
 
-# ---------------- OVERALL ----------------
-overall = int((total_done / total_topics) * 100)
+topics_percent = int((total_done / total_topics) * 100) if total_topics else 0
+plan_percent = int((completed_slots / total_slots) * 100) if total_slots else 0
 
-st.subheader("Overall Completion Status")
-animated_circle(overall)
+final_percent = int((topics_percent + plan_percent) / 2)
 
-if overall == 100:
+st.header("🏆 MASTER OVERALL PROGRESS")
+animated_circle(final_percent)
+
+st.write(f"Syllabus Completed: {topics_percent}%")
+st.write(f"50-Day Plan Completed: {plan_percent}%")
+
+if final_percent == 100:
     st.balloons()
-    st.success("🎉 100% Completed! You Are Exam Ready!")
+    st.success("🎉 MASTER PLAN COMPLETED! EXAM READY!")
