@@ -3,22 +3,20 @@ import random
 
 st.set_page_config(page_title="KIRAN ALP CBT-2 PREPARATION TRACKER", layout="wide")
 
-# ---------------- STYLE ----------------
+# -------------------- STYLE --------------------
 st.markdown("""
 <style>
 
-/* Soft background */
 .stApp {
     background-color: #eaf4ff;
 }
 
-/* Very light watermark */
 .stApp::before {
     content: "";
     background-image: url("https://img.freepik.com/free-vector/student-studying-desk_23-2148880412.jpg");
     background-repeat: no-repeat;
-    background-position: center 60%;
-    background-size: 600px;
+    background-position: center 65%;
+    background-size: 650px;
     opacity: 0.05;
     position: fixed;
     width: 100%;
@@ -26,10 +24,10 @@ st.markdown("""
     z-index: -1;
 }
 
-/* Attractive heading */
+/* Heading */
 .main-title {
     text-align: center;
-    font-size: 46px;
+    font-size: 48px;
     font-weight: 800;
     background: linear-gradient(90deg, #1565c0, #8e24aa);
     -webkit-background-clip: text;
@@ -47,7 +45,7 @@ st.markdown("""
     color: #5e35b1;
 }
 
-/* Section */
+/* Section Box */
 .section-box {
     background-color: rgba(255,255,255,0.95);
     padding: 25px;
@@ -56,7 +54,6 @@ st.markdown("""
     box-shadow: 0px 5px 12px rgba(0,0,0,0.1);
 }
 
-/* Circle center */
 .circle-container {
     display:flex;
     justify-content:center;
@@ -66,37 +63,89 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------- TITLE ----------------
+# -------------------- TITLE --------------------
 st.markdown('<div class="main-title">KIRAN ALP CBT-2 PREPARATION TRACKER</div>', unsafe_allow_html=True)
 
-# ---------------- QUOTE ----------------
+# -------------------- QUOTES --------------------
 quotes = [
     "Small daily progress leads to big success.",
     "Discipline today, selection tomorrow.",
-    "Stay focused. Railway dream is loading...",
-    "Consistency is your secret weapon.",
-    "Study hard now. Shine later."
+    "Consistency beats talent.",
+    "Railway uniform loading...",
+    "Stay focused. You are closer than you think."
 ]
 
 st.markdown(f'<div class="quote-box">💡 {random.choice(quotes)}</div>', unsafe_allow_html=True)
 
-# ---------------- SYLLABUS ----------------
+# -------------------- FULL SYLLABUS --------------------
+
 syllabus = {
-    "PART A - MATHEMATICS": [
-        "Number System","BODMAS","Percentages","Time & Work"
-    ],
-    "PART A - REASONING": [
-        "Analogies","Series","Coding-Decoding","Syllogism"
-    ],
-    "PART B - TRADE THEORY": [
-        "Welding","Lathe","Grinding","Bearings"
-    ]
+
+"PART A - ARITHMETIC": [
+"Number System","BODMAS","Decimals","Fractions","LCM","HCF",
+"Ratio & Proportion","Percentages","Mensuration",
+"Time & Work","Time & Distance",
+"Simple Interest","Compound Interest",
+"Profit & Loss","Algebra",
+"Geometry","Trigonometry",
+"Elementary Statistics","Square Root",
+"Age Calculations","Calendar","Clock",
+"Pipes & Cistern"
+],
+
+"PART A - REASONING": [
+"Analogies","Alphabetical Series","Number Series",
+"Coding-Decoding","Mathematical Operations",
+"Relationships","Syllogism","Jumbling",
+"Venn Diagram","Data Interpretation",
+"Data Sufficiency","Conclusions",
+"Decision Making","Similarities & Differences",
+"Analytical Reasoning","Classification",
+"Directions","Statement-Arguments",
+"Assumptions"
+],
+
+"PART A - ENGINEERING SCIENCE": [
+"Engineering Drawing","Views & Projections",
+"Drawing Instruments","Lines",
+"Geometric Figures","Symbolic Representation",
+"Units & Measurements","Mass Weight Density",
+"Work Power Energy","Speed & Velocity",
+"Heat & Temperature","Basic Electricity",
+"Levers & Simple Machines",
+"Occupational Safety & Health",
+"Environmental Education","IT Literacy"
+],
+
+"PART B - TRADE THEORY (1st Year)": [
+"Introduction","Occupational Safety",
+"Marking Tools","Metals",
+"Hand Tools","Measuring Tools",
+"Cutting Tools","Sheet Metal Work",
+"Brazing & Soldering","Riveting",
+"Welding","Drilling & Reaming",
+"Screw Threads","Grinding",
+"Limits & Fits","Lathe Construction",
+"Lathe Accessories","Lathe Tools",
+"Lathe Operations","Preventive Maintenance"
+],
+
+"PART B - TRADE THEORY (2nd Year)": [
+"Fasteners","Gauges","Metrology",
+"Heat Treatment","Bearings",
+"Pipe Fittings","Jigs & Fixtures",
+"Working Materials","Transmission of Power",
+"Hydraulics & Pneumatics",
+"Lubricants & Coolants",
+"Lifting Appliances"
+]
 }
+
+# -------------------- PROGRESS CALCULATION --------------------
 
 total_topics = 0
 total_done = 0
 
-# ---------------- SECTIONS ----------------
 for section, topics in syllabus.items():
 
     st.markdown('<div class="section-box">', unsafe_allow_html=True)
@@ -110,17 +159,18 @@ for section, topics in syllabus.items():
     total_topics += len(topics)
     total_done += done
 
-    completed_percent = int((done / len(topics)) * 100)
-    pending_percent = 100 - completed_percent
+    completed = int((done / len(topics)) * 100)
+    pending = 100 - completed
 
-    st.progress(completed_percent / 100)
-    st.write(f"Completed: {completed_percent}%")
-    st.write(f"Pending: {pending_percent}%")
+    st.progress(completed / 100)
+    st.write(f"Completed: {completed}%")
+    st.write(f"Pending: {pending}%")
 
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------------- OVERALL PROGRESS ----------------
-overall_completed = int((total_done / total_topics) * 100) if total_topics > 0 else 0
+# -------------------- OVERALL STATUS --------------------
+
+overall_completed = int((total_done / total_topics) * 100)
 overall_pending = 100 - overall_completed
 
 circle_html = f"""
@@ -150,7 +200,8 @@ st.subheader("Overall Completion Status")
 st.markdown(circle_html, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# ---------------- CELEBRATION ----------------
+# -------------------- CELEBRATION --------------------
+
 if overall_completed == 100:
     st.balloons()
-    st.success("🎉 Congratulations! You Completed 100% 🎉")
+    st.success("🎉 100% SYLLABUS COMPLETED! READY FOR EXAM! 🎉")
