@@ -1,198 +1,186 @@
 import streamlit as st
-import math
+import json
+import os
+from datetime import datetime, timedelta
 
 st.set_page_config(layout="wide")
 
-# ---------------- BACKGROUND ---------------- #
-
+# ---------------- BACKGROUND STYLE ---------------- #
 st.markdown("""
 <style>
+body {
+    background-color: #eaf4ff;
+}
 .stApp {
-    background-image: url("https://images.unsplash.com/photo-1523580846011-d3a5bc25702b");
+    background-image: url("https://images.unsplash.com/photo-1523580494863-6f3031224c94");
     background-size: cover;
+    background-position: center;
     background-attachment: fixed;
 }
-
-.main {
-    background-color: rgba(255,255,255,0.88);
-    padding: 30px;
-    border-radius: 15px;
-}
-
 h1, h2, h3 {
     text-align: center;
 }
-
 .circle-container {
     display: flex;
     justify-content: space-around;
     margin-top: 20px;
 }
+.circle {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    position: relative;
+    text-align: center;
+    font-weight: bold;
+}
+.inner-circle {
+    width: 120px;
+    height: 120px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main">', unsafe_allow_html=True)
+# ---------------- DATA FILE ---------------- #
+DATA_FILE = "progress.json"
 
-st.markdown("<h1>📅 50 DAY MASTER STUDY PLAN</h1>", unsafe_allow_html=True)
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    return {}
 
-# ---------------- SUBJECT TOPICS ---------------- #
+def save_data(data):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f)
+
+progress_data = load_data()
+
+# ---------------- SYLLABUS ---------------- #
 
 aptitude_topics = [
-    "Number System", "BODMAS", "Decimals", "Fractions", "LCM & HCF",
-    "Ratio & Proportion", "Percentages", "Time & Work",
-    "Time & Distance", "Simple & Compound Interest",
-    "Profit & Loss", "Algebra", "Geometry",
-    "Trigonometry", "Statistics", "Square Root",
-    "Ages", "Calendar", "Clock", "Pipes & Cistern"
+    "Number System","BODMAS","Decimals","Fractions","LCM","HCF",
+    "Ratio & Proportion","Percentages","Mensuration","Time & Work",
+    "Time & Distance","Simple Interest","Compound Interest",
+    "Profit & Loss","Algebra","Geometry","Trigonometry",
+    "Statistics","Square Root","Age Problems","Calendar","Clock","Pipes"
 ]
 
 reasoning_topics = [
-    "Analogies", "Alphabetical Series", "Number Series",
-    "Coding & Decoding", "Mathematical Operations",
-    "Relationships", "Syllogism", "Jumbling",
-    "Venn Diagram", "Data Interpretation",
-    "Conclusions", "Decision Making",
-    "Similarities & Differences",
-    "Analytical Reasoning", "Classification",
-    "Directions", "Statements & Assumptions"
+    "Analogies","Alphabetical Series","Number Series","Coding-Decoding",
+    "Mathematical Operations","Relationships","Syllogism",
+    "Jumbling","Venn Diagram","Data Interpretation",
+    "Conclusions","Decision Making","Similarities","Differences",
+    "Analytical Reasoning","Classification","Directions",
+    "Statement-Arguments","Assumptions"
 ]
 
 engineering_topics = [
-    "Units & Measurements", "Mass & Density",
-    "Work Power Energy", "Speed & Velocity",
-    "Heat & Temperature", "Basic Electricity",
-    "Levers & Machines", "Safety & Health",
-    "Environment", "IT Literacy"
+    "Engineering Drawing","Units & Measurements","Mass Weight Density",
+    "Work Power Energy","Speed Velocity","Heat Temperature",
+    "Basic Electricity","Levers & Simple Machines",
+    "Occupational Safety","Environment","IT Literacy"
 ]
 
 fitter_topics = [
-    "Safety", "Marking Tools", "Metals",
-    "Hand Tools", "Measuring Tools",
-    "Cutting Tools", "Sheet Metal",
-    "Welding", "Drilling",
-    "Grinding", "Limits & Fits",
-    "Lathe Construction",
-    "Lathe Accessories",
-    "Lathe Tools",
-    "Lathe Operations"
+    "Occupational Safety","Marking Tools","Hand Tools","Measuring Tools",
+    "Cutting Tools","Sheet Metal","Brazing","Riveting","Welding",
+    "Drilling","Screw Threads","Grinding","Limits & Fits",
+    "Lathe Construction","Lathe Accessories","Lathe Tools",
+    "Lathe Operations","Preventive Maintenance"
 ]
 
-total_topics = (
-    len(aptitude_topics)
-    + len(reasoning_topics)
-    + len(engineering_topics)
-    + len(fitter_topics)
-)
+# ---------------- TOTAL CALCULATION ---------------- #
 
-# ---------------- CHECKLIST ---------------- #
+total_topics = len(aptitude_topics) + len(reasoning_topics) + len(engineering_topics) + len(fitter_topics)
 
-st.markdown("<h2>Daily Topic Completion</h2>", unsafe_allow_html=True)
+apt_completed = progress_data.get("apt", [])
+res_completed = progress_data.get("res", [])
+eng_completed = progress_data.get("eng", [])
+fit_completed = progress_data.get("fit", [])
 
-col1, col2 = st.columns(2)
+total_completed = len(apt_completed) + len(res_completed) + len(eng_completed) + len(fit_completed)
+
+overall_percentage = round((total_completed / total_topics) * 100) if total_topics > 0 else 0
+
+# ---------------- HEADINGS ---------------- #
+
+st.markdown("<h1>📅 50 DAY MASTER STUDY PLAN</h1>", unsafe_allow_html=True)
+
+start_date = datetime.now() + timedelta(days=1)
+day_number = min(50, total_completed + 1)
+current_date = (start_date + timedelta(days=day_number-1)).strftime("%d %B %Y")
+
+st.markdown(f"<h2>Day {day_number} - {current_date}</h2>", unsafe_allow_html=True)
+
+# ---------------- CHECKBOX SECTION ---------------- #
+
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.subheader("Aptitude")
-    apt_completed = []
-    for topic in aptitude_topics:
-        if st.checkbox(topic, key="apt_" + topic):
+    topic = aptitude_topics[day_number % len(aptitude_topics)]
+    if st.checkbox(f"Aptitude (Topic: {topic})", key="apt_check"):
+        if topic not in apt_completed:
             apt_completed.append(topic)
-
-    st.subheader("Reasoning")
-    res_completed = []
-    for topic in reasoning_topics:
-        if st.checkbox(topic, key="res_" + topic):
-            res_completed.append(topic)
+            progress_data["apt"] = apt_completed
+            save_data(progress_data)
 
 with col2:
-    st.subheader("Engineering Science")
-    eng_completed = []
-    for topic in engineering_topics:
-        if st.checkbox(topic, key="eng_" + topic):
+    topic = reasoning_topics[day_number % len(reasoning_topics)]
+    if st.checkbox(f"Reasoning (Topic: {topic})", key="res_check"):
+        if topic not in res_completed:
+            res_completed.append(topic)
+            progress_data["res"] = res_completed
+            save_data(progress_data)
+
+with col3:
+    topic = engineering_topics[day_number % len(engineering_topics)]
+    if st.checkbox(f"Engineering Science (Topic: {topic})", key="eng_check"):
+        if topic not in eng_completed:
             eng_completed.append(topic)
+            progress_data["eng"] = eng_completed
+            save_data(progress_data)
 
-    st.subheader("Fitter Core")
-    fit_completed = []
-    for topic in fitter_topics:
-        if st.checkbox(topic, key="fit_" + topic):
+with col4:
+    topic = fitter_topics[day_number % len(fitter_topics)]
+    if st.checkbox(f"Fitter Core (Topic: {topic})", key="fit_check"):
+        if topic not in fit_completed:
             fit_completed.append(topic)
+            progress_data["fit"] = fit_completed
+            save_data(progress_data)
 
-# ---------------- CUMULATIVE CALCULATION ---------------- #
+# ---------------- SUBJECT CUMULATIVE PERCENTAGE ---------------- #
 
-total_completed = (
-    len(apt_completed)
-    + len(res_completed)
-    + len(eng_completed)
-    + len(fit_completed)
-)
-
-overall_percentage = round((total_completed / total_topics) * 100)
-
-# Individual cumulative %
 apt_percent = round((len(apt_completed) / len(aptitude_topics)) * 100)
 res_percent = round((len(res_completed) / len(reasoning_topics)) * 100)
 eng_percent = round((len(eng_completed) / len(engineering_topics)) * 100)
 fit_percent = round((len(fit_completed) / len(fitter_topics)) * 100)
 
-# ---------------- CIRCLE FUNCTION ---------------- #
+# ---------------- CIRCULAR DISPLAY ---------------- #
 
-def draw_circle(percent, title):
-    color = "#00b894" if percent == 100 else "#ff7675"
-
-    circle_html = f"""
-    <div style='text-align:center'>
-        <h3>{title}</h3>
-        <div style="
-            width:150px;
-            height:150px;
-            border-radius:50%;
-            background:conic-gradient({color} {percent*3.6}deg, #ffe6e6 0deg);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            margin:auto;
-        ">
-            <div style="
-                width:110px;
-                height:110px;
-                border-radius:50%;
-                background:white;
-                display:flex;
-                flex-direction:column;
-                align-items:center;
-                justify-content:center;
-                font-weight:bold;
-                font-size:18px;
-            ">
-                {percent}%<br>
-                <span style='color:red'>P {100-percent}%</span>
-            </div>
+def circle(percent):
+    color = "green" if percent == 100 else "red"
+    pending = 100 - percent
+    st.markdown(f"""
+    <div class="circle" style="background: conic-gradient({color} {percent*3.6}deg, #f4cccc 0deg);">
+        <div class="inner-circle">
+            <div>{percent}%</div>
+            <div style='color:red;'>P {pending}%</div>
         </div>
     </div>
-    """
-    st.markdown(circle_html, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
-# ---------------- DISPLAY CIRCLES HORIZONTAL ---------------- #
-
-st.markdown("<h2>Subject Wise Cumulative Progress</h2>", unsafe_allow_html=True)
-
-c1, c2, c3, c4 = st.columns(4)
-
-with c1:
-    draw_circle(apt_percent, "Aptitude")
-
-with c2:
-    draw_circle(res_percent, "Reasoning")
-
-with c3:
-    draw_circle(eng_percent, "Engineering")
-
-with c4:
-    draw_circle(fit_percent, "Fitter Core")
-
-# ---------------- OVERALL CIRCLE ---------------- #
-
-st.markdown("<h2>Overall 50 Day Completion</h2>", unsafe_allow_html=True)
-
-draw_circle(overall_percentage, "TOTAL SYLLABUS")
-
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown("<div class='circle-container'>", unsafe_allow_html=True)
+circle(apt_percent)
+circle(res_percent)
+circle(eng_percent)
+circle(fit_percent)
+st.markdown("</div>", unsafe_allow_html=True)
